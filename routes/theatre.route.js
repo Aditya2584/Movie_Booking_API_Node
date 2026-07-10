@@ -9,6 +9,8 @@ const routes = (app) =>{
     app.get('/mba/api/v1/theatres/:id', theatreController.getTheatre);
 
     app.get('/mba/api/v1/theatres', theatreController.getTheatres);
+      
+    app.patch('/mba/api/v1/theatres/:id/movies', theatreMiddlewares.validateUpdateMoviesRequest, theatreController.updateMovies);
 }
 
 module.exports = routes;

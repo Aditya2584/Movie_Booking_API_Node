@@ -60,9 +60,35 @@ const getAllTheatres = async () =>{
     }
 }
 
+const updateMoviesInTheatres = async(theatreId, movieIds, insert) => {
+    const theatre = await Theatre.findById(theatreId);
+    if(!theatre){
+        return{
+            err: "No such theatre found for the id provider",
+            code: 404
+        }
+    }
+    if(insert){
+        movieIds.forEach(movieId => {
+            theatre.movies.push(movieId);
+        });
+    }
+    else{
+        let savedMovieIds = theatre.movies;
+        movieIds.forEach(movieId => {
+            savedMovieIds = savedMovieIds.filter(smi => smi == movieId);
+        });
+        theatre.movies = savedMovieIds;
+    }
+
+    await theatre.save();
+    return theatre.populate("movies");
+}
+
 module.exports = {
     createTheatre,
     deleteTheatre,
     getTheatre,
     getAllTheatres,
+    updateMoviesInTheatres,
 }
