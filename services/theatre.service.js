@@ -51,6 +51,20 @@ const getTheatre = async (id)=>{
 }
 
 const getAllTheatres = async (data) =>{
+
+    // try{
+    //     let query = {};
+
+    //     if(data && data.city){
+    //         query.city = data.city;
+    //     }
+    //     const response = await Theatre.find({});
+    //     return response;
+    // }catch(error){
+    //     console.log(error);
+    //     throw error;
+    // }
+
     try{
         let query = {};
         let pagination = {};
@@ -77,6 +91,7 @@ const getAllTheatres = async (data) =>{
         console.log(error);
         throw error;
     }
+
 }
 
 const updateMoviesInTheatres = async(theatreId, movieIds, insert) => {
