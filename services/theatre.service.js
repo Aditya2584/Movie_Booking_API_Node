@@ -13,7 +13,7 @@ const createTheatre = async(data) =>{
             return {err: err, code :422};
         }
         console.log(error);
-        throw err;
+        throw error;
     }
 }
 
@@ -95,7 +95,7 @@ const updateMoviesInTheatres = async(theatreId, movieIds, insert) => {
     else{
         let savedMovieIds = theatre.movies;
         movieIds.forEach(movieId => {
-            savedMovieIds = savedMovieIds.filter(smi => smi == movieId);
+            savedMovieIds = savedMovieIds.filter(smi => smi != movieId);
         });
         theatre.movies = savedMovieIds;
     }
@@ -104,10 +104,33 @@ const updateMoviesInTheatres = async(theatreId, movieIds, insert) => {
     return theatre.populate("movies");
 }
 
+const updateTheatre = async(id, data) =>{
+    try{
+        const response = await Theatre.findByIdAndUpdate(id, data, {new: true, runValidators:true});
+        if(!response){
+            return {
+                err: "No theatre found for the given id",
+                code: 404,
+            }
+        }
+        return response;
+    }catch(error){
+        if(error.name == "ValidationError"){
+            let err = {};
+            Object.keys(error.errors).forEach((key)=>{
+                err[key] = error.errors[key].message;
+            });
+            return {err: err, code: 422}
+        }
+        throw error;
+    }
+}
+
 module.exports = {
     createTheatre,
     deleteTheatre,
     getTheatre,
     getAllTheatres,
     updateMoviesInTheatres,
+    updateTheatre,
 }
