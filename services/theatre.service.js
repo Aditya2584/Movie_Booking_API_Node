@@ -1,4 +1,5 @@
 const Theatre = require("../models/theatre.model")
+const Movie = require("../models/movie.model")
 
 const createTheatre = async(data) =>{
     try{
@@ -51,20 +52,6 @@ const getTheatre = async (id)=>{
 }
 
 const getAllTheatres = async (data) =>{
-
-    // try{
-    //     let query = {};
-
-    //     if(data && data.city){
-    //         query.city = data.city;
-    //     }
-    //     const response = await Theatre.find({});
-    //     return response;
-    // }catch(error){
-    //     console.log(error);
-    //     throw error;
-    // }
-
     try{
         let query = {};
         let pagination = {};
@@ -78,6 +65,11 @@ const getAllTheatres = async (data) =>{
             // this checks whether name is present in query or not
             query.name = data.name
         }
+        if(data && data.movieId){
+            query.movies = {$all: data.movieId};
+        }
+        
+
         if(data && data.limit){
             pagination.limit = data.limit;
         }
@@ -145,9 +137,6 @@ const updateMoviesInTheatres = async(theatreId, movieIds, insert) => {
     //         code: 404
     //     }
     // }
-    
-
-    
 }
 
 const updateTheatre = async(id, data) =>{
