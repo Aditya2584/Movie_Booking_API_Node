@@ -95,28 +95,56 @@ const getAllTheatres = async (data) =>{
 }
 
 const updateMoviesInTheatres = async(theatreId, movieIds, insert) => {
-    const theatre = await Theatre.findById(theatreId);
-    if(!theatre){
-        return{
-            err: "No such theatre found for the id provider",
-            code: 404
-        }
-    }
-    if(insert){
-        movieIds.forEach(movieId => {
-            theatre.movies.push(movieId);
-        });
-    }
-    else{
-        let savedMovieIds = theatre.movies;
-        movieIds.forEach(movieId => {
-            savedMovieIds = savedMovieIds.filter(smi => smi != movieId);
-        });
-        theatre.movies = savedMovieIds;
-    }
 
-    await theatre.save();
-    return theatre.populate("movies");
+    try{
+        if(insert){
+            // let previousMovies = new Set(theatre.movies);
+            // movieIds.forEach(movieId => {
+            //     if(!previousMovies.has(movieId)){
+            //         theatre.movies.push(movieId);
+            //     }
+            // });
+
+            await Theatre.updateOne(
+                {_id: theatreId},
+                {$addToSet: {movies: {$each: movieIds}}}
+            );
+        }
+        else{
+            // let savedMovieIds = theatre.movies;
+            // movieIds.forEach(movieId => {
+            //     savedMovieIds = savedMovieIds.filter(smi => smi != movieId);
+            // });
+            // theatre.movies = savedMovieIds;
+
+            await Theatre.updateOne(
+                {_id: theatreId},
+                {$pull: {movies: {$in: movieIds}}}
+            );
+        }
+        const theatre = await Theatre.findById(theatreId);
+        // await theatre.save();
+        return theatre.populate("movies");
+    }catch(error){
+        if(error.name == 'TypeError'){
+            return {
+                code: 404,
+                err: "No theatre found for the given Id"
+            }
+        }
+        console.log(error);
+        throw error;
+    }
+    // const theatre = await Theatre.findById(theatreId);
+    // if(!theatre){
+    //     return{
+    //         err: "No such theatre found for the id provider",
+    //         code: 404
+    //     }
+    // }
+    
+
+    
 }
 
 const updateTheatre = async(id, data) =>{
