@@ -97,6 +97,7 @@ const getAllTheatres = async (data) =>{
 const updateMoviesInTheatres = async(theatreId, movieIds, insert) => {
 
     try{
+        let theatre;
         if(insert){
             // let previousMovies = new Set(theatre.movies);
             // movieIds.forEach(movieId => {
@@ -105,9 +106,10 @@ const updateMoviesInTheatres = async(theatreId, movieIds, insert) => {
             //     }
             // });
 
-            await Theatre.updateOne(
+            theatre = await Theatre.findByIdAndUpdate(
                 {_id: theatreId},
-                {$addToSet: {movies: {$each: movieIds}}}
+                {$addToSet: {movies: {$each: movieIds}}},
+                {new: true}
             );
         }
         else{
@@ -117,12 +119,13 @@ const updateMoviesInTheatres = async(theatreId, movieIds, insert) => {
             // });
             // theatre.movies = savedMovieIds;
 
-            await Theatre.updateOne(
+            theatre = await Theatre.findByIdAndUpdate(
                 {_id: theatreId},
-                {$pull: {movies: {$in: movieIds}}}
+                {$pull: {movies: {$in: movieIds}}},
+                {new: true}
             );
         }
-        const theatre = await Theatre.findById(theatreId);
+        // const theatre = await Theatre.findById(theatreId);
         // await theatre.save();
         return theatre.populate("movies");
     }catch(error){
