@@ -117,6 +117,22 @@ const getMovies = async(req, res) =>{
     }
 }
 
+const checkMovie = async(req, res) =>{
+    try{
+        const response = await theatreService.checkMovieInATheatre(req.params.theatreId, req.params.movieId);
+        if(response.err){
+            errorResponseBody.err = response.err;
+            return res.status(response.code).json(errorResponseBody);
+        }
+        successResponseBody.data = response;
+        successResponseBody.message = "Successfully checked movie is present in the theatre or not";
+        return res.status(200).json(successResponseBody);
+    }catch(error){
+        errorResponseBody.err = error;
+        return res.status(500).json(errorResponseBody);
+    }
+}
+
 module.exports = {
     create,
     destroy,
@@ -125,4 +141,5 @@ module.exports = {
     updateMovies,
     update,
     getMovies,
+    checkMovie,
 }
