@@ -37,7 +37,7 @@ userSchema.pre('save', async function (next) {
     // A trigger to encrypt the plane password before saving the user
     const hash = await bcrypt.hash(this.password, 10);
     this.password = hash;
-    // next();
+    // next(); 
 });
 
 const User = mongoose.model('User', userSchema);
