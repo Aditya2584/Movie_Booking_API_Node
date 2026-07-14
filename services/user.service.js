@@ -1,3 +1,4 @@
+const { response } = require("express");
 const User = require("../models/user.model");
 const {USER_ROLE, USER_STATUS} = require("../utils/constants");
 
@@ -29,6 +30,26 @@ const createUser =  async(data) => {
     }
 }
 
+const getUserByEmail = async(email) =>{
+    try{
+        const response = await User.findOne({
+            email : email
+        });
+        if(!response){
+            throw {
+                err: "No User found for the given email",
+                code: 404,
+            }
+        }
+        console.log(response);
+        return response;
+    }catch(error){
+        console.log(error);
+        throw error;
+    }
+}
+
 module.exports = {
     createUser,
+    getUserByEmail,
 }

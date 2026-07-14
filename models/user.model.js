@@ -42,14 +42,16 @@ const userSchema = new mongoose.Schema({
 
 }, {timestamps: true});
 
-userSchema.pre('save', async function (next) {
-    // A trigger to encrypt the plane password before saving the user
-    const hash = await bcrypt.hash(this.password, 10);
-    this.password = hash;
-    // next(); 
+userSchema.pre('save', async function () {
+    if (!this.isModified('password')) {
+        return;
+    }
+
+    // Encrypt the plain password before saving the user.
+    this.password = await bcrypt.hash(this.password, 10);
 });
 
-userSchema.methods.isValidPassword = async(plainPassword) =>{
+userSchema.methods.isValidPassword = async function (plainPassword) {
     const currentUser = this;
     const compare = await bcrypt.compare(plainPassword, currentUser.password);
     return compare;
