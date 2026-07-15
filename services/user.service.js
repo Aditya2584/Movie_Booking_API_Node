@@ -81,7 +81,7 @@ const updateUserRoleOrStatus = async(data, userId) =>{
             err: "No User found for the given Id",
             code: 404,
         }
-
+        console.log(response);            
         return response;
     }catch(error){
         if(error.name == "ValidationError"){

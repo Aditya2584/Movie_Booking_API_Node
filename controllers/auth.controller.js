@@ -37,7 +37,7 @@ const signin = async(req, res) =>{
         successResponseBody.message = "Successfully Logged In";
         successResponseBody.data = {
             email: user.email,
-            role: user.UserRole,
+            role: user.userRole,
             status: user.userStatus,
             token: token,
         }
