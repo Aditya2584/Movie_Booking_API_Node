@@ -3,6 +3,7 @@ const jwt = require("jsonwebtoken")
 const {successResponseBody, errorResponseBody} = require("../utils/responsebody");
 const User = require("../models/user.model");
 const userService = require("../services/user.service");
+const {USER_ROLE} = require("../utils/constants")
 
 const validateAuthRequest = async(req, res, next) => {
     if(!req.body.name){
@@ -83,9 +84,40 @@ const validateResetPasswordRequest = (req, res, next) => {
     next();
 }
 
+const isAdmin = async(req, res, next) =>{
+    console.log(req.user);
+    const user = await userService.getUserById(req.user);
+    if(user.userRole != USER_ROLE.admin){
+        errorResponseBody.err = "User is not an admin, cannot proceed with the request"
+        return res.status(401).json(errorResponseBody);
+    }
+    next();
+}
+
+const isClient = async(req, res, next) =>{
+    const user = await userService.getUserById(req.user);
+    if(user.userRole != USER_ROLE.client){
+        errorResponseBody.err = "User is not a client, cannot proceed with the request"
+        return res.status(401).json(errorResponseBody);
+    }
+    next();
+}
+
+const isAdminOrClient = async(req, res, next) =>{
+    const user = await userService.getUserById(req.user);
+    if(user.userRole != USER_ROLE.client && user.userRole != USER_ROLE.admin){
+        errorResponseBody.err = "User is neither a client nor an admin, cannot proceed with the request"
+        return res.status(401).json(errorResponseBody);
+    }
+    next();
+}
+
 module.exports = {
     validateAuthRequest,
     validateSigninRequest,
     isAuthenticated,
     validateResetPasswordRequest,
+    isAdmin,
+    isClient,
+    isAdminOrClient,
 }
