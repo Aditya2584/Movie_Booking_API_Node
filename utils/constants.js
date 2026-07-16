@@ -21,8 +21,22 @@ const STATUS_CODES = {
     UNPROCESSABLE_ENTITY: 422
 }
 
+const BOOKING_STATUS = {
+    cancelled: CANCALLED,
+    successfull: SUCCESSFULL,
+    processing: IN_PROCESS
+}
+
+const PAYMENT_STATUS = {
+    failed : "FAILED",
+    success: "SUCCESS",
+    pending: "PENDING"
+}
+
 module.exports = {
     USER_ROLE,
     USER_STATUS,
     STATUS: STATUS_CODES,
+    BOOKING_STATUS,
+    PAYMENT_STATUS,
 }
