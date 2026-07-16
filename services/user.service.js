@@ -1,6 +1,8 @@
 const { response } = require("express");
 const User = require("../models/user.model");
 const {USER_ROLE, USER_STATUS} = require("../utils/constants");
+const { STATUS } = require("../utils/constants"); 
+
 
 const createUser =  async(data) => {
     try{
@@ -66,8 +68,37 @@ const getUserById = async(id) =>{
     }
 }
 
+const updateUserRoleOrStatus = async(data, userId) =>{
+    try{
+        let updateQuery = {};
+
+        if(data.userRole) updateQuery.userRole = data.userRole;
+        if(data.userStatus) updateQuery.userStatus = data.userStatus;
+
+        let response = await User.findByIdAndUpdate(userId, updateQuery, {new: true, runValidators: true});
+
+        if(!response) throw {
+            err: "No User found for the given Id",
+            code: STATUS.NOT_FOUND,
+        }
+        console.log(response);            
+        return response;
+    }catch(error){
+        if(error.name == "ValidationError"){
+            let err = {};
+            Object.keys(error.errors).forEach(key =>{
+                err[key] = error.errors[key].message;
+            });
+            throw {err: err, code: STATUS.BAD_REQUEST}
+        }
+        console.log(error);
+        throw error;
+    }
+}
+
 module.exports = {
     createUser,
     getUserByEmail,
     getUserById,
+    updateUserRoleOrStatus,
 }
