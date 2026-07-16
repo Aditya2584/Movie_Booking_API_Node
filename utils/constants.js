@@ -11,7 +11,7 @@ const USER_ROLE = {
 }
 
 const STATUS_CODES = {
-    ok : 200,
+    OK : 200,
     INTERNAL_SERVER_ERROR: 500,
     CREATED: 201,
     UNAUTHORISED: 401,
