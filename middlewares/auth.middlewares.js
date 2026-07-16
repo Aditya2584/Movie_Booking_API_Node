@@ -3,7 +3,7 @@ const jwt = require("jsonwebtoken")
 const {successResponseBody, errorResponseBody} = require("../utils/responsebody");
 const User = require("../models/user.model");
 const userService = require("../services/user.service");
-const {USER_ROLE} = require("../utils/constants")
+const {USER_ROLE, USER_STATUS, STATUS} = require("../utils/constants")
 
 const validateAuthRequest = async(req, res, next) => {
     if(!req.body.name){
@@ -24,17 +24,36 @@ const validateAuthRequest = async(req, res, next) => {
     next();
 }
 
+const validateSignupRequest = async(req, res, next) => {
+    if(!req.body.name){
+        errorResponseBody.err = "Name of the user not present in the request";
+        return res.status(STATUS.BAD_REQUEST).json(errorResponseBody);
+    }
+
+    if(!req.body.email){
+        errorResponseBody.err = "Email of the user not present in the request";
+        return res.status(STATUS.BAD_REQUEST).json(errorResponseBody);
+    }
+    
+    if(!req.body.password){
+        errorResponseBody.err = "Password of the user not present in the request";
+        return res.status(STATUS.BAD_REQUEST).json(errorResponseBody);
+    }
+
+    next();
+}
+
 const validateSigninRequest = async(req, res, next) =>{
     // Validate user email presence
     if(!req.body.email){
         errorResponseBody.err = "No email provided for sign in";
-        return res.status(400).json(errorResponseBody);
+        return res.status(STATUS.BAD_REQUEST).json(errorResponseBody);
     }
 
     // Validate user password presence
     if(!req.body.password){
         errorResponseBody.err = "No password provided for sign in";
-        return res.status(400).json(errorResponseBody);
+        return res.status(STATUS.BAD_REQUEST).json(errorResponseBody);
     }
 
     next();
@@ -45,12 +64,12 @@ const isAuthenticated = async(req, res, next) => {
         const token = req.headers["x-access-token"];
         if(!token){
             errorResponseBody.err = "No token provided";
-            return res.status(403).json(errorResponseBody);
+            return res.status(STATUS.FORBIDDEN).json(errorResponseBody);
         }
         const response = jwt.verify(token, process.env.AUTH_KEY);
         if(!response){
             errorResponseBody.err = "Token not verified";
-            return res.status(401).json(errorResponseBody);
+            return res.status(STATUS.UNAUTHORISED).json(errorResponseBody);
         }
         const user = await userService.getUserById(response.id);
         req.user = user.id;
@@ -58,14 +77,14 @@ const isAuthenticated = async(req, res, next) => {
     }catch(error){
         if(error.name == "JsonWebTokenError"){
             errorResponseBody.err = error.message;
-            return res.status(401).json(errorResponseBody)
+            return res.status(STATUS.UNAUTHORISED).json(errorResponseBody)
         }
-        if(error.code == 404){
+        if(error.code == STATUS.NOT_FOUND){
             errorResponseBody.err = "User doesn't exists";
             return res.status(error.code).json(errorResponseBody);
         }
         errorResponseBody.err = error;
-        return res.status(500).json(errorResponseBody);
+        return res.status(STATUS.INTERNAL_SERVER_ERROR).json(errorResponseBody);
     }
     
 }
@@ -73,12 +92,12 @@ const isAuthenticated = async(req, res, next) => {
 const validateResetPasswordRequest = (req, res, next) => {
     if(!req.body.oldPassword){
         errorResponseBody.err = 'Missing the old Password in the request';
-        return res.status(400).json(errorResponseBody);
+        return res.status(validateSignupRequest).json(errorResponseBody);
     }
 
     if(!req.body.newPassword){
         errorResponseBody.err = 'Missing the new Password in the request';
-        return res.status(400).json(errorResponseBody);
+        return res.status(validateSignupRequest).json(errorResponseBody);
     }
 
     next();
@@ -89,7 +108,7 @@ const isAdmin = async(req, res, next) =>{
     const user = await userService.getUserById(req.user);
     if(user.userRole != USER_ROLE.admin){
         errorResponseBody.err = "User is not an admin, cannot proceed with the request"
-        return res.status(401).json(errorResponseBody);
+        return res.status(STATUS.UNAUTHORISED).json(errorResponseBody);
     }
     next();
 }
@@ -98,7 +117,7 @@ const isClient = async(req, res, next) =>{
     const user = await userService.getUserById(req.user);
     if(user.userRole != USER_ROLE.client){
         errorResponseBody.err = "User is not a client, cannot proceed with the request"
-        return res.status(401).json(errorResponseBody);
+        return res.status(STATUS.UNAUTHORISED).json(errorResponseBody);
     }
     next();
 }
@@ -107,7 +126,7 @@ const isAdminOrClient = async(req, res, next) =>{
     const user = await userService.getUserById(req.user);
     if(user.userRole != USER_ROLE.client && user.userRole != USER_ROLE.admin){
         errorResponseBody.err = "User is neither a client nor an admin, cannot proceed with the request"
-        return res.status(401).json(errorResponseBody);
+        return res.status(STATUS.UNAUTHORISED).json(errorResponseBody);
     }
     next();
 }
@@ -115,6 +134,7 @@ const isAdminOrClient = async(req, res, next) =>{
 module.exports = {
     validateAuthRequest,
     validateSigninRequest,
+    validateSignupRequest,
     isAuthenticated,
     validateResetPasswordRequest,
     isAdmin,
