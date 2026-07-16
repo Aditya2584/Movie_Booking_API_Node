@@ -60,10 +60,10 @@ const getTheatres = async(req, res) =>{
         const response = await theatreService.getAllTheatres(req.query);
         successResponseBody.data = response;
         successResponseBody.message = "Successly fetched all the theatre";
-        return res.status(200).json(successResponseBody);
+        return res.status(STATUS.OK).json(successResponseBody);
     }catch(error){
         errorResponseBody.err = error;
-        return res.status(500).json(errorResponseBody)
+        return res.status(STATUS.INTERNAL_SERVER_ERROR).json(errorResponseBody)
     }
 }
 
@@ -92,17 +92,17 @@ const updateMovies = async(req, res) =>{
 const update = async(req, res) =>{
     try{
         const response = await theatreService.updateTheatre(req.params.id, req.body);
-        if(response.err){
-            errorResponseBody.err = response.err;
-            return res.status(response.code).json(errorResponseBody);
-        }
         successResponseBody.data = response;
         successResponseBody.message = "Successfully updated the theatre";
-        return res.status(200).json(successResponseBody);
+        return res.status(STATUS.OK).json(successResponseBody);
     }catch(error){
         console.log(error);
+        if(error.err){
+            errorResponseBody.err = error.err;
+            return res.status(error.code).json(errorResponseBody);
+        }
         errorResponseBody.err = error;
-        return res.status(500).json(errorResponseBody);
+        return res.status(STATUS.INTERNAL_SERVER_ERROR).json(errorResponseBody);
     }
 }
 
