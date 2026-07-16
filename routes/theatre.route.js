@@ -9,7 +9,11 @@ const routes = (app) =>{
         theatreMiddlewares.validateTheatreCreateRequest , theatreController.create
     );
 
-    app.delete('/mba/api/v1/theatres/:id',authMiddleware.isAuthenticated, theatreController.destroy);
+    app.delete('/mba/api/v1/theatres/:id',
+        authMiddleware.isAuthenticated, 
+        authMiddleware.isAdminOrClient,
+        theatreController.destroy
+    );
 
     app.get('/mba/api/v1/theatres/:id', theatreController.getTheatre);
 
