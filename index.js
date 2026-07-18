@@ -9,6 +9,7 @@ const authRoutes = require("./routes/auth.routes");
 const userRoutes = require("./routes/user.routes");
 const bookingRoutes = require("./routes/booking.routes");
 const showRoutes = require("./routes/show.routes");
+const paymentRoutes = require("./routes/payment.routes");
 
 env.config();
 const app = express();
@@ -24,6 +25,7 @@ authRoutes(app); //invoking Auth Routes
 userRoutes(app); //invoking User Routes
 bookingRoutes(app); //invoking Booking Routes
 showRoutes(app); //invoking Show Routes
+paymentRoutes(app); //invoking Payment Routes
 
 app.listen(process.env.PORT, async()=>{
     console.log(`Server started on PORT ${process.env.PORT}`);

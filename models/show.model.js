@@ -19,7 +19,7 @@ const showSchema = new mongoose.Schema({
     },
     price: {
         type: Number,
-        require: true,
+        required: true,
     },
     format: {
         type: String,
