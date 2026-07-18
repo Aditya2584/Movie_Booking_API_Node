@@ -67,7 +67,19 @@ const getPaymentById = async(id) =>{
     }   
 }
 
+const getAllPayments = async(userId) =>{
+    try{
+        const user = await User.findById(userId);
+        let filter = {};
+        if(user.userRole != USER_ROLE.admin){
+            filter[userId] = user.id;
+        }
+    }catch(error){
+        throw error;
+    }
+}
+
 module.exports = {
     createPayment,
     getPaymentById,
-}
+}   

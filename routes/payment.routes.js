@@ -14,7 +14,9 @@ const routes = (app) => {
         '/mba/api/v1/payments/:id',
         authMiddlewares.isAuthenticated,
         paymentController.getPaymentDetailsById,
-    )
+    );
+
+    
 
 }
 

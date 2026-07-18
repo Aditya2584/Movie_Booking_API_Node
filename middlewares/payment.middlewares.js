@@ -18,7 +18,7 @@ const verifyPaymentCreateRequest = async (req, res, next) => {
         errorResponseBody.err = 'No amount sent';
         return res.status(STATUS.BAD_REQUEST).json(errorResponseBody);
     }
-    // everything is fine
+    
     next();
 
 }
