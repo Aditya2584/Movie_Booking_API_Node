@@ -4,10 +4,12 @@ const showSchema = new mongoose.Schema({
     theatreId:{
         type: mongoose.Schema.Types.ObjectId,
         required: true,
+        ref: 'Theatre'
     },
     movieId: {
         type: mongoose.Schema.Types.ObjectId,
         required: true,
+        ref: 'Movie'
     },
     timing:{
         type: String,
@@ -19,7 +21,7 @@ const showSchema = new mongoose.Schema({
     },
     price: {
         type: Number,
-        require: true,
+        required: true,
     },
     format: {
         type: String,
