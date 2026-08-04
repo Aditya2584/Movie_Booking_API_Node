@@ -12,6 +12,9 @@ A production-ready backend API that powers an online movie ticket booking system
 
 ---
 
+# 🎞️ Demo Video
+https://github.com/user-attachments/assets/8a40df5a-f3af-4a0b-9cdb-97e07a10f2e9
+
 # 🌟 Overview
 
 Movie Booking REST API is designed to simulate a real-world movie ticket booking platform.
