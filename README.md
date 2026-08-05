@@ -1,3 +1,6 @@
+# 🎞️ Demo Video
+https://github.com/user-attachments/assets/8a40df5a-f3af-4a0b-9cdb-97e07a10f2e9
+
 # 🎬 Movie Booking Application
 
 > **A scalable RESTful backend for movie ticket booking built with Node.js, Express.js, MongoDB, and JWT Authentication.**
@@ -11,9 +14,6 @@
 A production-ready backend API that powers an online movie ticket booking system. The application provides secure authentication, role-based authorization, theatre management, movie management, show scheduling, booking, and payment handling using a layered backend architecture.
 
 ---
-
-# 🎞️ Demo Video
-https://github.com/user-attachments/assets/8a40df5a-f3af-4a0b-9cdb-97e07a10f2e9
 
 # 🌟 Overview
 
